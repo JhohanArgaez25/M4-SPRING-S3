@@ -1,9 +1,5 @@
 package com.bancolombia.cuentabancaria.config;
 
-import com.bancolombia.cuentabancaria.model.DomainException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,15 +13,14 @@ import java.util.Map;
 @ControllerAdvice
 public class ExceptionHandlerConfig {
 
-    @Autowired
-    private ObjectMapper mapper;
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-    @ExceptionHandler(DomainException.class)
-    public ResponseEntity<Object> handleRequestApiException(
-            HttpServletRequest request,
-            DomainException domainException) {
-        return new ResponseEntity<>(domainException.getErrorModel1(),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointerException(NullPointerException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
